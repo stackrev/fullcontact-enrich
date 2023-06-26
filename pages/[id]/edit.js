@@ -1,60 +1,60 @@
-import React, { useState, useEffect } from "react"
-import Link from "next/link"
-import fetch from "isomorphic-unfetch"
-import { useRouter } from "next/router"
-import { Button, Form, Loader, Confirm } from "semantic-ui-react"
-import absoluteUrl from "next-absolute-url"
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import fetch from "isomorphic-unfetch";
+import { useRouter } from "next/router";
+import { Button, Form, Loader, Confirm } from "semantic-ui-react";
+import absoluteUrl from "next-absolute-url";
 
-const EditProduct = ({ product }) => {
-  // State for initial product props
+const EditVisitor = ({ visitor }) => {
+  // State for initial visitor props
   const [form, setForm] = useState({
-    nama_produk: product.nama_produk,
-    keterangan: product.keterangan,
-    harga: product.harga,
-    jumlah: product.jumlah,
-  })
+    pid: visitor.pid,
+    email: visitor.email,
+    harga: visitor.harga,
+    jumlah: visitor.jumlah,
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState({});
 
   // State for delete handler
-  const [confirm, setConfirm] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [confirm, setConfirm] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  const open = () => setConfirm(true)
-  const close = () => setConfirm(false)
+  const open = () => setConfirm(true);
+  const close = () => setConfirm(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (isSubmitting) {
       if (Object.keys(errors).length === 0) {
-        updateNote()
+        updateNote();
       } else {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     }
 
     if (isDeleting) {
-      deleteProduct()
+      deleteVisitor();
     }
-  }, [errors, isDeleting])
+  }, [errors, isDeleting]);
 
-  const deleteProduct = async () => {
-    const productId = router.query.id
+  const deleteVisitor = async () => {
+    const visitorId = router.query.id;
     try {
-      const deleted = await fetch(`/api/product/${productId}`, {
+      const deleted = await fetch(`/api/visitor/${visitorId}`, {
         method: "DELETE",
-      })
-      router.push("/")
+      });
+      router.push("/");
     } catch (err) {
-      console.error(err.message)
+      console.error(err.message);
     }
-  }
+  };
 
   const updateNote = async () => {
     try {
-      const res = await fetch(`/api/product/${router.query.id}`, {
+      const res = await fetch(`/api/visitor/${router.query.id}`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -62,53 +62,47 @@ const EditProduct = ({ product }) => {
         },
 
         body: JSON.stringify(form),
-      })
-      router.push("/")
+      });
+      router.push("/");
     } catch (err) {
-      console.error(err.message)
+      console.error(err.message);
     }
-  }
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    let errs = validate()
-    setErrors(errs)
-    setIsSubmitting(true)
-  }
+    e.preventDefault();
+    let errs = validate();
+    setErrors(errs);
+    setIsSubmitting(true);
+  };
   const handleChange = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
   const handleDelete = async () => {
-    setIsDeleting(true)
-    close()
-  }
+    setIsDeleting(true);
+    close();
+  };
 
   const validate = () => {
-    let err = {}
-    if (!form.nama_produk) {
-      err.nama_produk = "Nama produk diperlukan"
+    let err = {};
+    if (!form.pid) {
+      err.pid = "Nama produk diperlukan";
     }
-    if (!form.keterangan) {
-      err.keterangan = "Keterangan diperlukan"
+    if (!form.email) {
+      err.email = "Email diperlukan";
     }
-    if (!form.harga) {
-      err.harga = "Harga diperlukan"
-    }
-    if (!form.jumlah) {
-      err.jumlah = "Jumlah diperlukan"
-    }
-    return err
-  }
+    return err;
+  };
 
   return (
     <div className="bg-gray-200 h-screen">
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
-          <h1 className="text-3xl font-medium">Edit Product</h1>
+          <h1 className="text-3xl font-medium">Edit Visitor</h1>
           <Link href="/">
             <a className=" text-md text-gray-700 font-medium hover:text-gray-900 ">
               Back
@@ -122,7 +116,7 @@ const EditProduct = ({ product }) => {
             <Form onSubmit={handleSubmit}>
               <Form.Input
                 error={
-                  errors.nama_produk
+                  errors.pid
                     ? {
                         content: "Harap masukan Nama produk",
                         pointing: "below",
@@ -130,53 +124,27 @@ const EditProduct = ({ product }) => {
                     : null
                 }
                 type="text"
-                label="Nama Produk"
-                name="nama_produk"
-                value={form.nama_produk}
-                placeholder="Nama Produk"
+                label="PID"
+                name="pid"
+                value={form.pid}
+                placeholder="PID"
                 onChange={handleChange}
               />
               <Form.Input
                 error={
-                  errors.keterangan
-                    ? { content: "Harap masukan Keterangan", pointing: "below" }
+                  errors.email
+                    ? { content: "Harap masukan Email", pointing: "below" }
                     : null
                 }
                 type="text"
-                label="keterangan"
-                name="keterangan"
-                value={form.keterangan}
-                placeholder="Keterangan"
-                onChange={handleChange}
-              />
-              <Form.Input
-                error={
-                  errors.nama_produk
-                    ? { content: "Harap masukan harga", pointing: "below" }
-                    : null
-                }
-                type="number"
-                label="Harga"
-                name="harga"
-                value={form.harga}
-                placeholder="Harga"
-                onChange={handleChange}
-              />
-              <Form.Input
-                error={
-                  errors.nama_produk
-                    ? { content: "Harap masukan jumlah", pointing: "below" }
-                    : null
-                }
-                type="number"
-                label="Jumlah"
-                name="jumlah"
-                value={form.jumlah}
-                placeholder="Jumlah"
+                label="email"
+                name="email"
+                value={form.email}
+                placeholder="Email"
                 onChange={handleChange}
               />
               <div className="py-4">
-                <Button type="submit">Ubah Produk</Button>
+                <Button type="submit">Update</Button>
               </div>
             </Form>
 
@@ -196,16 +164,16 @@ const EditProduct = ({ product }) => {
         onConfirm={handleDelete}
       />
     </div>
-  )
-}
+  );
+};
 
-EditProduct.getInitialProps = async ({ req, query: { id } }) => {
-  const { origin } = absoluteUrl(req, "localhost:3000")
+EditVisitor.getInitialProps = async ({ req, query: { id } }) => {
+  const { origin } = absoluteUrl(req, "localhost:3000");
 
-  const resp = await fetch(`${origin}/api/product/${id}`)
-  const { data } = await resp.json()
+  const resp = await fetch(`${origin}/api/visitor/${id}`);
+  const { data } = await resp.json();
 
-  return { product: data }
-}
+  return { visitor: data };
+};
 
-export default EditProduct
+export default EditVisitor;
