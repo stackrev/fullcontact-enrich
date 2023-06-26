@@ -12,7 +12,7 @@ const Home = ({ visitors }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container max-w-screen-lg px-6">
+      <main className="container max-w-screen px-6">
         <div className="py-8">
           <h1 className="text-3xl font-medium text-gray-800 ">
             Website Monitoring
@@ -23,7 +23,7 @@ const Home = ({ visitors }) => {
         </div>
 
         <div className="flex justify-between items-center px-2 ">
-          <h3 className="text-xl text-gray-800 font-medium">Visitors</h3>
+          <h3 className="text-xl text-gray-800 font-medium">Clients</h3>
 
           <Link href="/new">
             <a className="bg-teal-600 hover:bg-teal-700 text-white hover:text-gray-100 font-bold py-2 px-3 rounded">
@@ -38,7 +38,7 @@ const Home = ({ visitors }) => {
       <footer className=" max-w-screen-lg p-6 bg-gray-200 w-full flex justify-between items-center">
         <p className="font-medium text text-gray-700">
           Copyright ©
-          <Link href="https://github.com/hydego17">
+          <Link href="https://targetiq.io">
             <a className="text-teal-700 " target="_blank">
               {" "}
               TargetIQ
