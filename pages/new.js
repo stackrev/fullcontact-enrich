@@ -6,7 +6,6 @@ import { Button, Form, Loader } from "semantic-ui-react";
 
 const newVisitor = () => {
   const [form, setForm] = useState({
-    pid: "",
     email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,9 +54,6 @@ const newVisitor = () => {
 
   const validate = () => {
     let err = {};
-    if (!form.pid) {
-      err.pid = "Nama produk diperlukan";
-    }
     if (!form.email) {
       err.email = "Email diperlukan";
     }
@@ -68,7 +64,7 @@ const newVisitor = () => {
     <div className="bg-gray-200 h-screen">
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
-          <h1 className="text-3xl font-medium">Create Visitor</h1>
+          <h1 className="text-3xl font-medium">Create Client</h1>
           <Link href="/">
             <a className=" text-md text-gray-700 font-medium hover:text-gray-900 ">
               Back
@@ -81,23 +77,8 @@ const newVisitor = () => {
           <Form onSubmit={handleSubmit}>
             <Form.Input
               error={
-                errors.pid
-                  ? {
-                      content: "Harap masukan Nama produk",
-                      pointing: "below",
-                    }
-                  : null
-              }
-              type="text"
-              label="PID"
-              name="pid"
-              placeholder="PID"
-              onChange={handleChange}
-            />
-            <Form.Input
-              error={
                 errors.email
-                  ? { content: "Harap masukan Email", pointing: "below" }
+                  ? { content: "Email is not valid", pointing: "below" }
                   : null
               }
               type="text"

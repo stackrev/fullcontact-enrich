@@ -2,11 +2,16 @@ const mongoose = require("mongoose");
 const visitorSchema = new mongoose.Schema({
   pid: {
     type: String,
-    required: true,
+  },
+  recordId: {
+    type: String,
   },
   email: {
     type: String,
     required: true,
+  },
+  info: {
+    type: JSON,
   },
 });
 
