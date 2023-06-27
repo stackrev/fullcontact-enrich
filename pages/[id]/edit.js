@@ -167,13 +167,22 @@ const EditVisitor = ({ visitor }) => {
   );
 };
 
-EditVisitor.getInitialProps = async ({ req, query: { id } }) => {
-  const { origin } = absoluteUrl(req, "localhost:3000");
+export async function getServerSideProps(context) {
+  const id = context.query.id;
+  const res = await fetch(`http://localhost:3000/api/visitor/${id}`);
+  const { data } = await res.json();
+  console.log(data);
 
-  const resp = await fetch(`${origin}/api/visitor/${id}`);
-  const { data } = await resp.json();
+  return { props: { visitor: data } };
+}
 
-  return { visitor: data };
-};
+// EditVisitor.getInitialProps = async ({ req, query: { id } }) => {
+//   const { origin } = absoluteUrl(req, "localhost:3000");
+
+//   const resp = await fetch(`${origin}/api/visitor/${id}`);
+//   const { data } = await resp.json();
+
+//   return { visitor: data };
+// };
 
 export default EditVisitor;

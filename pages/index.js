@@ -59,12 +59,20 @@ const Home = ({ visitors }) => {
   );
 };
 
-Home.getInitialProps = async ({ req, res }) => {
-  const { origin } = absoluteUrl(req, "localhost:3000");
-  const resp = await fetch(`${origin}/api/visitor`);
-  const { data } = await resp.json();
+export async function getServerSideProps(context) {
+  const res = await fetch(`http://localhost:3000/api/visitor`);
+  const { data } = await res.json();
+  console.log(data);
 
-  return { visitors: data };
-};
+  return { props: { visitors: data } };
+}
+
+// Home.getInitialProps = async ({ req, res }) => {
+//   const { origin } = absoluteUrl(req, "localhost:3000");
+//   const resp = await fetch(`${origin}/api/visitor`);
+//   const { data } = await resp.json();
+
+//   return { visitors: data };
+// };
 
 export default Home;
