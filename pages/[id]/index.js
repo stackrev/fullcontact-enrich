@@ -44,7 +44,6 @@ export async function getServerSideProps(context) {
   const id = context.query.id;
   const res = await fetch(`http://localhost:3000/api/visitor/${id}`);
   const { data } = await res.json();
-  console.log(data);
 
   return { props: { visitor: data } };
 }
