@@ -102,7 +102,7 @@ const EditVisitor = ({ visitor }) => {
     <div className="bg-gray-200 h-screen">
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
-          <h1 className="text-3xl font-medium">Edit Visitor</h1>
+          <h1 className="text-3xl font-medium">Edit Client</h1>
           <Link href="/">
             <a className=" text-md text-gray-700 font-medium hover:text-gray-900 ">
               Back
@@ -116,6 +116,20 @@ const EditVisitor = ({ visitor }) => {
             <Form onSubmit={handleSubmit}>
               <Form.Input
                 error={
+                  errors.email
+                    ? { content: "Harap masukan Email", pointing: "below" }
+                    : null
+                }
+                type="text"
+                label="email"
+                name="email"
+                value={form.email}
+                placeholder="Email"
+                onChange={handleChange}
+              />
+              <Form.Input
+                readOnly
+                error={
                   errors.pid
                     ? {
                         content: "Harap masukan Nama produk",
@@ -128,19 +142,6 @@ const EditVisitor = ({ visitor }) => {
                 name="pid"
                 value={form.pid}
                 placeholder="PID"
-                onChange={handleChange}
-              />
-              <Form.Input
-                error={
-                  errors.email
-                    ? { content: "Harap masukan Email", pointing: "below" }
-                    : null
-                }
-                type="text"
-                label="email"
-                name="email"
-                value={form.email}
-                placeholder="Email"
                 onChange={handleChange}
               />
               <div className="py-4">
@@ -169,7 +170,6 @@ const EditVisitor = ({ visitor }) => {
 
 export async function getServerSideProps(context) {
   const id = context.query.id;
-  console.log(id);
   const res = await fetch(`http://localhost:3000/api/visitor/${id}`);
   const { data } = await res.json();
 

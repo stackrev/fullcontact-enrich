@@ -12,7 +12,6 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        console.log("od",id);
         const visitor = await Visitor.findById(id);
         if (!visitor) {
           return res.status(400).json({ success: false });

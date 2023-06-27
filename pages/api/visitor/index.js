@@ -21,10 +21,7 @@ export default async (req, res) => {
         let visitorData = req.body;
         const email = req.body.email;
 
-        console.log(email);
-
         // Fetch personId from the Email
-        console.log("email:", email);
         try {
           var myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
@@ -49,7 +46,6 @@ export default async (req, res) => {
             requestOptions
           );
           const data = await response.json();
-          console.log("data:", data.details.identifiers.personIds);
           visitorData.info = data;
           if (data.details.identifiers.personIds)
             visitorData.pid = data.details.identifiers.personIds[0];
@@ -58,7 +54,6 @@ export default async (req, res) => {
           const visitor = await Visitor.create(visitorData);
           res.status(201).json({ success: true, data: visitor });
         } catch (error) {
-          console.log(error);
           res.status(500).json({ success: false });
         }
 

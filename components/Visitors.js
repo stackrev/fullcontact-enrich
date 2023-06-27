@@ -6,14 +6,14 @@ const Visitors = ({ visitors }) => {
       <table className="table-auto w-full ">
         <thead>
           <tr>
+            <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100">
+              ID
+            </th>
             <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
               Email
             </th>
             <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
               Person ID
-            </th>
-            <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100">
-              Record ID
             </th>
             <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border  border-gray-200 bg-gray-100">
               Option
@@ -26,12 +26,12 @@ const Visitors = ({ visitors }) => {
               <td className="rounded border px-4 py-2">
                 <Link href={`/${visitor._id}`}>
                   <a className=" text-blue-700 hover:underline font-medium">
-                    {visitor.email}
+                    {visitor._id}
                   </a>
                 </Link>
               </td>
+              <td className="rounded border px-4 py-2">{visitor.email}</td>
               <td className="rounded border px-4 py-2">{visitor.pid}</td>
-              <td className="rounded border px-4 py-2">{visitor.recordId}</td>
               <td className="rounded border px-2 py-2  ">
                 <Link href={`/${visitor._id}/edit`}>
                   <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 lg:px-6 rounded">
