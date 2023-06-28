@@ -5,17 +5,31 @@ import { useRouter } from "next/router";
 import { useRef } from "react";
 import { Button, Form, Loader } from "semantic-ui-react";
 import { v4 as uuidv4 } from "uuid";
+import { AlertDanger } from "../components/Alert";
 
 const newVisitor = () => {
+  const [showAlert, setShowAlert] = useState(false);
   const fileInputRef = useRef(null);
   const [itemList, setItemList] = useState([]);
   const [fileName, setFileName] = useState(null);
+  const [currentCount, setCurrentCount] = useState(0);
+  const [conflictCount, setConflictCount] = useState(0);
   const [form, setForm] = useState({
     file: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const router = useRouter();
+
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
 
   useEffect(() => {
     if (isSubmitting) {
@@ -38,6 +52,17 @@ const newVisitor = () => {
 
         body: JSON.stringify({ email: item.email }),
       });
+      let status = "ready";
+      if (res.status === 409) {
+        setShowAlert(true);
+        setIsSubmitting(false);
+        status = "conflict";
+        setConflictCount((prev) => prev + 1);
+        showAlert(true);
+      } else if (res.status === 201) {
+        status = "done";
+      }
+
       setItemList((prevList) =>
         prevList.map((prevItem) => {
           if (prevItem.email === item.email) {
@@ -56,7 +81,7 @@ const newVisitor = () => {
     for (const item of itemList) {
       try {
         const res = await createVisitor(item);
-        console.log(res);
+        setCurrentCount((prev) => prev + 1);
       } catch (err) {
         console.error(err.message);
       }
@@ -108,6 +133,10 @@ const newVisitor = () => {
 
   return (
     <div className="bg-gray-200 h-screen">
+      {showAlert && (
+        <AlertDanger message={`${conflictCount} Client conflicted!`} />
+      )}
+
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
           <h1 className="text-3xl font-medium">Create Clients</h1>
@@ -139,27 +168,32 @@ const newVisitor = () => {
             </div>
           </Form>
         )}
-        {fileName ? (
-          <table className="table-auto w-full mt-3">
-            <thead>
-              <tr>
-                <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
-                  Email
-                </th>
-                <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {itemList.map((item) => (
-                <tr key={uuidv4()} className="lg:text-center">
-                  <td className="rounded border px-4 py-2">{item.email}</td>
-                  <td className="rounded border px-4 py-2">{item.status}</td>
+        {itemList.length ? (
+          <>
+            <div>
+              {currentCount}/{itemList.length}
+            </div>
+            <table className="table-auto w-full mt-3">
+              <thead>
+                <tr>
+                  <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
+                    Email
+                  </th>
+                  <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
+                    Status
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {itemList.map((item) => (
+                  <tr key={uuidv4()} className="lg:text-center">
+                    <td className="rounded border px-4 py-2">{item.email}</td>
+                    <td className="rounded border px-4 py-2">{item.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         ) : (
           <></>
         )}

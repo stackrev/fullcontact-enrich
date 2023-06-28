@@ -23,7 +23,9 @@ const Home = ({ visitors }) => {
         </div>
 
         <div className="flex justify-between items-center px-2 ">
-          <h3 className="text-xl text-gray-800 font-medium">Clients</h3>
+          <h3 className="text-xl text-gray-800 font-medium">
+            {visitors.length} Clients
+          </h3>
           <div>
             <Link href="/upload">
               <a className="bg-teal-500 hover:bg-teal-700 text-white hover:text-gray-100 font-bold py-2 px-3 mr-3 rounded">
