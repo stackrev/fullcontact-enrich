@@ -86,7 +86,7 @@ const newVisitor = () => {
         console.error(err.message);
       }
     }
-    router.push("/");
+    router.push("/clients");
   };
 
   const handleSubmit = (e) => {

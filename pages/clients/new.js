@@ -47,7 +47,7 @@ const newVisitor = () => {
       if (res.status === 409) {
         setShowAlert(true);
         setIsSubmitting(false);
-      } else router.push("/");
+      } else router.push("/clients");
     } catch (err) {
       console.error(err.message);
     }

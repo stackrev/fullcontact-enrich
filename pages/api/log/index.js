@@ -29,24 +29,31 @@ export default async (req, res) => {
         const date1 = new Date(recent_history[pid]);
         const date2 = new Date(date);
 
+        console.log(date1, date2);
+
         if (recent_history[pid] && date2.getTime() - date1.getTime() < 3600 * 1000) {
           recent_history[pid] = date;
-          res.json({ status: 'success', message: 'Data duplicated so ignored' });
-          return;
+          return res.json({ status: 'success', message: 'Data duplicated so ignored' });
         }
         recent_history[pid] = date;
 
+        let sendData = {...req.body, email: "Anony"};
         // Do something with the pid and date here
         console.log(pid, date);
+        await Visitor.findOne({ pid: pid }, (err, visitor) => {
+          if (visitor){
+            sendData = {...sendData, email: visitor.email};
+          }
+        });
 
         const socket = socketIOClient(API_URL);
 
         // Emit the POST data to the Socket.IO server
-        socket.emit('postData', req.body);
+        socket.emit('postData', sendData);
 
 
         // Send a response back to the client
-        res.status(201).json({ error: 'Data received' });
+        res.status(201).json({ success: 'Data received' });
       } catch (error) {
         res.status(500).json({ success: false });
       }

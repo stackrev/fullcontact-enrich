@@ -46,7 +46,7 @@ const EditVisitor = ({ visitor }) => {
       const deleted = await fetch(`/api/visitor/${visitorId}`, {
         method: "DELETE",
       });
-      router.push("/");
+      router.push("/clients");
     } catch (err) {
       console.error(err.message);
     }
@@ -63,7 +63,7 @@ const EditVisitor = ({ visitor }) => {
 
         body: JSON.stringify(form),
       });
-      router.push("/");
+      router.push("/clients");
     } catch (err) {
       console.error(err.message);
     }
