@@ -1,6 +1,5 @@
 import dbConnect from "../../../utils/dbConnect";
 import Client from "../../../models/Client";
-import infoWithEmail from "../../../utils/helpers";
 
 dbConnect();
 
@@ -24,8 +23,7 @@ export default async (req, res) => {
         await Client.find({ email: email }, async (err, clients) => {
           if (clients.length) {
             return res.status(409).json({ success: false, data: clients });
-          }
-          else {
+          } else {
             // Fetch personId from the Email
             try {
               var myHeaders = new Headers();
@@ -60,8 +58,6 @@ export default async (req, res) => {
             }
           }
         });
-
-
       } catch (error) {
         res.status(500).json({ success: false });
       }

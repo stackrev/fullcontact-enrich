@@ -58,7 +58,6 @@ const newClient = () => {
         setIsSubmitting(false);
         status = "conflict";
         setConflictCount((prev) => prev + 1);
-        showAlert(true);
       } else if (res.status === 201) {
         status = "done";
       }
