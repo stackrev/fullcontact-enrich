@@ -1,8 +1,31 @@
 import Link from "next/link";
 import Head from "next/head";
-import Visitors from "../components/Visitors";
+import { useEffect } from 'react';
+import io from 'socket.io-client';
 
-const Home = ({ visitors }) => {
+const Home = ({ }) => {
+  
+  useEffect(() => {
+    const socket = io('http://147.182.133.115:3001');
+
+    socket.on('connect', () => {
+      console.log('Connected to Socket.IO server');
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from Socket.IO server');
+    });
+
+    socket.on('dataFromServer', (data) => {
+      console.log('Received data from server:', data);
+      // Do something with the received data
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <div className="min-h-screen antialiased bg-gray-200 flex  flex-col items-center ">
       <Head>

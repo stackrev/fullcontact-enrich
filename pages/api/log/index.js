@@ -1,5 +1,7 @@
 import dbConnect from "../../../utils/dbConnect";
 import Visitor from "../../../models/Visitor";
+import socketIOClient from 'socket.io-client';
+const API_URL = 'http://localhost:3001'; // Update with the Socket.IO server URL
 
 dbConnect();
 let recent_history = [];
@@ -36,6 +38,12 @@ export default async (req, res) => {
 
         // Do something with the pid and date here
         console.log(pid, date);
+
+        const socket = socketIOClient(API_URL);
+
+        // Emit the POST data to the Socket.IO server
+        socket.emit('postData', req.body);
+
 
         // Send a response back to the client
         res.status(201).json({ error: 'Data received' });
