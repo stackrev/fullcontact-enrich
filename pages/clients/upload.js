@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { useRef } from "react";
 import { Button, Form, Loader } from "semantic-ui-react";
 import { v4 as uuidv4 } from "uuid";
-import { AlertDanger } from "../components/Alert";
+import { AlertDanger } from "../../components/Alert";
 
 const newVisitor = () => {
   const [showAlert, setShowAlert] = useState(false);
@@ -140,7 +140,7 @@ const newVisitor = () => {
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
           <h1 className="text-3xl font-medium">Create Clients</h1>
-          <Link href="/">
+          <Link href="/clients">
             <a className=" text-md text-gray-700 font-medium hover:text-gray-900 ">
               Back
             </a>

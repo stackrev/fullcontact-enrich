@@ -24,7 +24,7 @@ const Visitors = ({ visitors }) => {
           {visitors.map((visitor) => (
             <tr key={visitor._id} className="lg:text-center">
               <td className="rounded border px-4 py-2">
-                <Link href={`/${visitor._id}`}>
+                <Link href={`/clients/${visitor._id}`}>
                   <a className=" text-blue-700 hover:underline font-medium">
                     {visitor._id}
                   </a>
@@ -33,7 +33,7 @@ const Visitors = ({ visitors }) => {
               <td className="rounded border px-4 py-2">{visitor.email}</td>
               <td className="rounded border px-4 py-2">{visitor.pid}</td>
               <td className="rounded border px-2 py-2  ">
-                <Link href={`/${visitor._id}/edit`}>
+                <Link href={`/clients/${visitor._id}/edit`}>
                   <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 lg:px-6 rounded">
                     Edit
                   </button>
