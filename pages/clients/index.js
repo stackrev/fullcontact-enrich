@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
-import Visitors from "../../components/Visitors";
+import Clients from "../../components/Clients";
 
-const Home = ({ visitors }) => {
+const Home = ({ clients }) => {
   return (
     <div className="min-h-screen antialiased bg-gray-200 flex  flex-col items-center ">
       <Head>
@@ -23,7 +23,7 @@ const Home = ({ visitors }) => {
 
         <div className="flex justify-between items-center px-2 ">
           <h3 className="text-xl text-gray-800 font-medium">
-            {visitors.length} Clients
+            {clients.length} Clients
           </h3>
           <div>
             <Link href="/clients/upload">
@@ -40,7 +40,7 @@ const Home = ({ visitors }) => {
           </div>
         </div>
 
-        <Visitors visitors={visitors} />
+        <Clients clients={clients} />
       </main>
 
       <footer className=" max-w-screen-lg p-6 bg-gray-200 w-full flex justify-between items-center">
@@ -54,7 +54,7 @@ const Home = ({ visitors }) => {
           </Link>
         </p>
 
-        {/* <Link href="/api/visitor">
+        {/* <Link href="/api/client">
           <a
             target="_blank"
             className=" text-md text-gray-700 font-medium text-right hover:text-gray-900 "
@@ -68,18 +68,18 @@ const Home = ({ visitors }) => {
 };
 
 export async function getServerSideProps(context) {
-  const res = await fetch(`http://localhost:3000/api/visitor`);
+  const res = await fetch(`http://localhost:3000/api/client`);
   const { data } = await res.json();
 
-  return { props: { visitors: data } };
+  return { props: { clients: data } };
 }
 
 // Home.getInitialProps = async ({ req, res }) => {
 //   const { origin } = absoluteUrl(req, "localhost:3000");
-//   const resp = await fetch(`${origin}/api/visitor`);
+//   const resp = await fetch(`${origin}/api/client`);
 //   const { data } = await resp.json();
 
-//   return { visitors: data };
+//   return { clients: data };
 // };
 
 export default Home;

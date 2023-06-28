@@ -5,13 +5,13 @@ import { useRouter } from "next/router";
 import { Button, Form, Loader, Confirm } from "semantic-ui-react";
 import absoluteUrl from "next-absolute-url";
 
-const EditVisitor = ({ visitor }) => {
-  // State for initial visitor props
+const EditClient = ({ client }) => {
+  // State for initial client props
   const [form, setForm] = useState({
-    pid: visitor.pid,
-    email: visitor.email,
-    harga: visitor.harga,
-    jumlah: visitor.jumlah,
+    pid: client.pid,
+    email: client.email,
+    harga: client.harga,
+    jumlah: client.jumlah,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,14 +36,14 @@ const EditVisitor = ({ visitor }) => {
     }
 
     if (isDeleting) {
-      deleteVisitor();
+      deleteClient();
     }
   }, [errors, isDeleting]);
 
-  const deleteVisitor = async () => {
-    const visitorId = router.query.id;
+  const deleteClient = async () => {
+    const clientId = router.query.id;
     try {
-      const deleted = await fetch(`/api/visitor/${visitorId}`, {
+      const deleted = await fetch(`/api/client/${clientId}`, {
         method: "DELETE",
       });
       router.push("/clients");
@@ -54,7 +54,7 @@ const EditVisitor = ({ visitor }) => {
 
   const updateNote = async () => {
     try {
-      const res = await fetch(`/api/visitor/${router.query.id}`, {
+      const res = await fetch(`/api/client/${router.query.id}`, {
         method: "PUT",
         headers: {
           Accept: "application/json",
@@ -164,19 +164,19 @@ const EditVisitor = ({ visitor }) => {
 
 export async function getServerSideProps(context) {
   const id = context.query.id;
-  const res = await fetch(`http://localhost:3000/api/visitor/${id}`);
+  const res = await fetch(`http://localhost:3000/api/client/${id}`);
   const { data } = await res.json();
 
-  return { props: { visitor: data } };
+  return { props: { client: data } };
 }
 
-// EditVisitor.getInitialProps = async ({ req, query: { id } }) => {
+// EditClient.getInitialProps = async ({ req, query: { id } }) => {
 //   const { origin } = absoluteUrl(req, "localhost:3000");
 
-//   const resp = await fetch(`${origin}/api/visitor/${id}`);
+//   const resp = await fetch(`${origin}/api/client/${id}`);
 //   const { data } = await resp.json();
 
-//   return { visitor: data };
+//   return { client: data };
 // };
 
-export default EditVisitor;
+export default EditClient;

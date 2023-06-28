@@ -7,7 +7,7 @@ import { route } from "next/dist/next-server/server/router";
 import Link from "next/link";
 import JSONTree from "../../../components/JSONTree";
 
-const Visitor = ({ visitor }) => {
+const Client = ({ client }) => {
   return (
     <div className="min-h-screen antialiased bg-gray-200 flex py-8 flex-col items-center justify-center">
       <div className="bg-gray-200 h-screen w-screen-md">
@@ -19,11 +19,11 @@ const Visitor = ({ visitor }) => {
             </a>
           </Link>
         </div>
-        <div className=" overflow-x-auto shadow rounded-lg visitor my-6 border lg:p-4 bg-white ">
-          <b>{visitor.email}</b>
-          <p>id: {visitor._id}</p>
-          <p>PID: {visitor.pid}</p>
-          {/* <div>{JSONTree(visitor.info)}</div> */}
+        <div className=" overflow-x-auto shadow rounded-lg client my-6 border lg:p-4 bg-white ">
+          <b>{client.email}</b>
+          <p>id: {client._id}</p>
+          <p>PID: {client.pid}</p>
+          {/* <div>{JSONTree(client.info)}</div> */}
         </div>
         {/* <Card>
           <Image
@@ -32,10 +32,10 @@ const Visitor = ({ visitor }) => {
             ui={false}
           />
           <Card.Content>
-            <Card.Header>{visitor.email}</Card.Header>
+            <Card.Header>{client.email}</Card.Header>
 
             <Card.Description>
-              <p> Information: {visitor.info}</p>
+              <p> Information: {client.info}</p>
             </Card.Description>
           </Card.Content>
         </Card> */}
@@ -46,19 +46,19 @@ const Visitor = ({ visitor }) => {
 
 export async function getServerSideProps(context) {
   const id = context.query.id;
-  const res = await fetch(`http://localhost:3000/api/visitor/${id}`);
+  const res = await fetch(`http://localhost:3000/api/client/${id}`);
   const { data } = await res.json();
 
-  return { props: { visitor: data } };
+  return { props: { client: data } };
 }
 
-// Visitor.getInitialProps = async ({ req, query: { id } }) => {
+// Client.getInitialProps = async ({ req, query: { id } }) => {
 //   const { origin } = absoluteUrl(req, "localhost:3000");
 
-//   const resp = await fetch(`${origin}/api/visitor/${id}`);
+//   const resp = await fetch(`${origin}/api/client/${id}`);
 //   const { data } = await resp.json();
 
-//   return { visitor: data };
+//   return { client: data };
 // };
 
-export default Visitor;
+export default Client;

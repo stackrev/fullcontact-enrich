@@ -1,5 +1,5 @@
 import dbConnect from "../../../utils/dbConnect";
-import Visitor from "../../../models/Visitor";
+import Client from "../../../models/Client";
 
 dbConnect();
 
@@ -12,25 +12,25 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const visitor = await Visitor.findById(id);
-        if (!visitor) {
+        const client = await Client.findById(id);
+        if (!client) {
           return res.status(400).json({ success: false });
         }
-        res.status(200).json({ success: true, data: visitor });
+        res.status(200).json({ success: true, data: client });
       } catch (error) {
         res.status(400).json({ success: false });
       }
       break;
     case "PUT":
       try {
-        const visitor = await Visitor.findByIdAndUpdate(id, req.body, {
+        const client = await Client.findByIdAndUpdate(id, req.body, {
           new: true,
           runValidators: true,
         });
-        if (!visitor) {
+        if (!client) {
           return res.status(400).json({ success: false });
         }
-        res.status(200).json({ success: true, data: visitor });
+        res.status(200).json({ success: true, data: client });
       } catch (error) {
         res.status(400).json({ success: false });
       }
@@ -38,9 +38,9 @@ export default async (req, res) => {
 
     case "DELETE":
       try {
-        const deletedVisitor = await Visitor.deleteOne({ _id: id });
+        const deletedClient = await Client.deleteOne({ _id: id });
 
-        if (!deletedVisitor) {
+        if (!deletedClient) {
           return res.status(400).json({ success: false });
         }
         res.status(200).json({ success: true, data: {} });
