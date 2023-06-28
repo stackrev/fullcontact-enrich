@@ -66,7 +66,7 @@ const newVisitor = () => {
       setItemList((prevList) =>
         prevList.map((prevItem) => {
           if (prevItem.email === item.email) {
-            return { ...prevItem, status: "done" };
+            return { ...prevItem, status: status };
           }
           return prevItem;
         })

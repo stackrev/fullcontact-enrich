@@ -22,8 +22,10 @@ export default async (req, res) => {
         const email = req.body.email;
 
         await Visitor.find({ email: email }, (err, visitors) => {
-          if (visitors.length)
+          if (visitors.length){
             res.status(409).json({ success: false, data: visitors });
+            return;
+          }
         });
 
         // Fetch personId from the Email
