@@ -20,7 +20,7 @@ const Visitor = ({ visitor }) => {
           </Link>
         </div>
         <div className=" overflow-x-auto shadow rounded-lg visitor my-6 border lg:p-4 bg-white ">
-          <h4>{visitor.email}</h4>
+          <b>{visitor.email}</b>
           <p>id: {visitor._id}</p>
           <p>PID: {visitor.pid}</p>
           {/* <div>{JSONTree(visitor.info)}</div> */}

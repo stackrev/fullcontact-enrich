@@ -32,6 +32,7 @@ export default async (req, res) => {
 
           var raw = JSON.stringify({
             email: email,
+            generatePid: true,
           });
 
           var requestOptions = {
@@ -42,15 +43,11 @@ export default async (req, res) => {
           };
           // Send the Email to Enrich API
           const response = await fetch(
-            "https://api.fullcontact.com/v3/person.enrich",
+            "https://api.fullcontact.com/v3/identity.resolve",
             requestOptions
           );
           const data = await response.json();
-          visitorData.info = data;
-          if (data.details.identifiers.personIds)
-            visitorData.pid = data.details.identifiers.personIds[0];
-          if (data.details.identifiers.recordIds)
-            visitorData.recordId = data.details.identifiers.recordIds[0];
+          visitorData.pid = data.personIds[0];
           const visitor = await Visitor.create(visitorData);
           res.status(201).json({ success: true, data: visitor });
         } catch (error) {

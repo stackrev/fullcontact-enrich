@@ -24,12 +24,19 @@ const Home = ({ visitors }) => {
 
         <div className="flex justify-between items-center px-2 ">
           <h3 className="text-xl text-gray-800 font-medium">Clients</h3>
+          <div>
+            <Link href="/upload">
+              <a className="bg-teal-500 hover:bg-teal-700 text-white hover:text-gray-100 font-bold py-2 px-3 mr-3 rounded">
+                Upload list
+              </a>
+            </Link>
 
-          <Link href="/new">
-            <a className="bg-teal-600 hover:bg-teal-700 text-white hover:text-gray-100 font-bold py-2 px-3 rounded">
-              Add one
-            </a>
-          </Link>
+            <Link href="/new">
+              <a className="bg-teal-600 hover:bg-teal-700 text-white hover:text-gray-100 font-bold py-2 px-3 rounded">
+                Add one
+              </a>
+            </Link>
+          </div>
         </div>
 
         <Visitors visitors={visitors} />
@@ -46,14 +53,14 @@ const Home = ({ visitors }) => {
           </Link>
         </p>
 
-        <Link href="/api/visitor">
+        {/* <Link href="/api/visitor">
           <a
             target="_blank"
             className=" text-md text-gray-700 font-medium text-right hover:text-gray-900 "
           >
             View API
           </a>
-        </Link>
+        </Link> */}
       </footer>
     </div>
   );

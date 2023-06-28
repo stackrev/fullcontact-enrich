@@ -129,14 +129,6 @@ const EditVisitor = ({ visitor }) => {
               />
               <Form.Input
                 readOnly
-                error={
-                  errors.pid
-                    ? {
-                        content: "Harap masukan Nama produk",
-                        pointing: "below",
-                      }
-                    : null
-                }
                 type="text"
                 label="PID"
                 name="pid"
@@ -145,7 +137,9 @@ const EditVisitor = ({ visitor }) => {
                 onChange={handleChange}
               />
               <div className="py-4">
-                <Button type="submit">Update</Button>
+                <Button disabled type="submit">
+                  Update
+                </Button>
               </div>
             </Form>
 

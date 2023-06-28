@@ -10,9 +10,6 @@ const visitorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  info: {
-    type: JSON,
-  },
 });
 
 module.exports =
