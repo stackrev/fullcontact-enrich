@@ -3,14 +3,26 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import { useRouter } from "next/router";
 import { Button, Form, Loader } from "semantic-ui-react";
+import { AlertDanger } from "../components/Alert";
 
 const newVisitor = () => {
+  const [showAlert, setShowAlert] = useState(false);
   const [form, setForm] = useState({
     email: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
   const router = useRouter();
+
+  useEffect(() => {
+    if (showAlert) {
+      const timer = setTimeout(() => {
+        setShowAlert(false);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showAlert]);
 
   useEffect(() => {
     if (isSubmitting) {
@@ -30,10 +42,12 @@ const newVisitor = () => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify(form),
       });
-      router.push("/");
+      if (res.status === 409) {
+        setShowAlert(true);
+        setIsSubmitting(false);
+      } else router.push("/");
     } catch (err) {
       console.error(err.message);
     }
@@ -62,6 +76,7 @@ const newVisitor = () => {
 
   return (
     <div className="bg-gray-200 h-screen">
+      {showAlert && <AlertDanger message="Client conflicted!" />}
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
           <h1 className="text-3xl font-medium">Create Client</h1>

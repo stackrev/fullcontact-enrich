@@ -21,6 +21,11 @@ export default async (req, res) => {
         let visitorData = req.body;
         const email = req.body.email;
 
+        await Visitor.find({ email: email }, (err, visitors) => {
+          if (visitors.length)
+            res.status(409).json({ success: false, data: visitors });
+        });
+
         // Fetch personId from the Email
         try {
           var myHeaders = new Headers();
