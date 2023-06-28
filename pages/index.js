@@ -56,6 +56,9 @@ const Home = ({ }) => {
                   Person ID
                 </th>
                 <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
+                  IP Address
+                </th>
+                <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
                   DateTime
                 </th>
                 <th className="rounded px-4 py-4 text-gray-800 ticky top-0  border border-gray-200 bg-gray-100  ">
@@ -67,6 +70,7 @@ const Home = ({ }) => {
               {itemList.map((item) => (
                 <tr key={uuidv4()} className="lg:text-center">
                   <td className="rounded border px-4 py-2">{item.pid}</td>
+                  <td className="rounded border px-4 py-2">{item.ip}</td>
                   <td className="rounded border px-4 py-2">{item.date}</td>
                   <td className="rounded border px-4 py-2">{item.email}</td>
                 </tr>
