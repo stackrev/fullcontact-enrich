@@ -1,5 +1,5 @@
 import dbConnect from "../../../utils/dbConnect";
-import Visitor from "../../../models/Visitor";
+import Client from "../../../models/Client";
 import socketIOClient from 'socket.io-client';
 const API_URL = 'http://localhost:3001'; // Update with the Socket.IO server URL
 
@@ -40,9 +40,9 @@ export default async (req, res) => {
         let sendData = {...req.body, email: "Anony"};
         // Do something with the pid and date here
         console.log(pid, date);
-        await Visitor.findOne({ pid: pid }, (err, visitor) => {
-          if (visitor){
-            sendData = {...sendData, email: visitor.email};
+        await Client.findOne({ pid: pid }, (err, client) => {
+          if (client){
+            sendData = {...sendData, email: client.email};
           }
         });
 

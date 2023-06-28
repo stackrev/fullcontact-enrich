@@ -1,5 +1,5 @@
 import dbConnect from "../../../utils/dbConnect";
-import Visitor from "../../../models/Visitor";
+import Client from "../../../models/Client";
 import infoWithEmail from "../../../utils/helpers";
 
 dbConnect();
@@ -10,20 +10,20 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const visitors = await Visitor.find({});
-        res.status(200).json({ success: true, data: visitors });
+        const clients = await Client.find({});
+        res.status(200).json({ success: true, data: clients });
       } catch (error) {
         res.status(400).json({ success: false });
       }
       break;
     case "POST":
       try {
-        let visitorData = { ...req.body, email: req.body.email.toLowerCase() };
-        const email = visitorData.email;
+        let clientData = { ...req.body, email: req.body.email.toLowerCase() };
+        const email = clientData.email;
 
-        await Visitor.find({ email: email }, async (err, visitors) => {
-          if (visitors.length) {
-            return res.status(409).json({ success: false, data: visitors });
+        await Client.find({ email: email }, async (err, clients) => {
+          if (clients.length) {
+            return res.status(409).json({ success: false, data: clients });
           }
           else {
             // Fetch personId from the Email
@@ -52,9 +52,9 @@ export default async (req, res) => {
                 requestOptions
               );
               const data = await response.json();
-              visitorData.pid = data.personIds[0];
-              const visitor = await Visitor.create(visitorData);
-              res.status(201).json({ success: true, data: visitor });
+              clientData.pid = data.personIds[0];
+              const client = await Client.create(clientData);
+              res.status(201).json({ success: true, data: client });
             } catch (error) {
               res.status(500).json({ success: false });
             }

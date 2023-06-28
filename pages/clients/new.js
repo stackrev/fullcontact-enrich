@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { Button, Form, Loader } from "semantic-ui-react";
 import { AlertDanger } from "../../components/Alert";
 
-const newVisitor = () => {
+const newClient = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -27,16 +27,16 @@ const newVisitor = () => {
   useEffect(() => {
     if (isSubmitting) {
       if (Object.keys(errors).length === 0) {
-        createVisitor();
+        createClient();
       } else {
         setIsSubmitting(false);
       }
     }
   }, [errors]);
 
-  const createVisitor = async () => {
+  const createClient = async () => {
     try {
-      const res = await fetch("/api/visitor", {
+      const res = await fetch("/api/client", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -110,4 +110,4 @@ const newVisitor = () => {
   );
 };
 
-export default newVisitor;
+export default newClient;

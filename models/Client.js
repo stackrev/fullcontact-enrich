@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const visitorSchema = new mongoose.Schema({
+const clientSchema = new mongoose.Schema({
   pid: {
     type: String,
   },
@@ -13,4 +13,4 @@ const visitorSchema = new mongoose.Schema({
 });
 
 module.exports =
-  mongoose.models.Visitor || mongoose.model("Visitor", visitorSchema);
+  mongoose.models.Client || mongoose.model("Client", clientSchema);

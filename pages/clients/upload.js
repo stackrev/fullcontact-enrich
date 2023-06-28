@@ -7,7 +7,7 @@ import { Button, Form, Loader } from "semantic-ui-react";
 import { v4 as uuidv4 } from "uuid";
 import { AlertDanger } from "../../components/Alert";
 
-const newVisitor = () => {
+const newClient = () => {
   const [showAlert, setShowAlert] = useState(false);
   const fileInputRef = useRef(null);
   const [itemList, setItemList] = useState([]);
@@ -41,9 +41,9 @@ const newVisitor = () => {
     }
   }, [errors]);
 
-  const createVisitor = async (item) => {
+  const createClient = async (item) => {
     try {
-      const res = await fetch("/api/visitor", {
+      const res = await fetch("/api/client", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -80,7 +80,7 @@ const newVisitor = () => {
   const startUploading = async () => {
     for (const item of itemList) {
       try {
-        const res = await createVisitor(item);
+        const res = await createClient(item);
         setCurrentCount((prev) => prev + 1);
       } catch (err) {
         console.error(err.message);
@@ -202,4 +202,4 @@ const newVisitor = () => {
   );
 };
 
-export default newVisitor;
+export default newClient;
