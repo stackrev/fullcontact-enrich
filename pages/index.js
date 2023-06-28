@@ -1,35 +1,8 @@
-import Link from "next/link";
 import Head from "next/head";
-import { useEffect, useState } from 'react';
-import io from 'socket.io-client';
 import { v4 as uuidv4 } from "uuid";
+import fetch from "isomorphic-unfetch";
 
-const Home = ({ }) => {
-  const [itemList, setItemList] = useState([]);
-
-  useEffect(() => {
-    const socket = io('http://147.182.133.115:3001');
-
-    socket.on('connect', () => {
-      console.log('Connected to Socket.IO server');
-    });
-
-    socket.on('disconnect', () => {
-      console.log('Disconnected from Socket.IO server');
-    });
-
-    socket.on('dataFromServer', (data) => {
-      console.log('Received data from server:', data);
-
-      // Do something with the received data
-      setItemList((prevList) => [...prevList, data]);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
+const Home = ({ visitlogs }) => {
   return (
     <div className="min-h-screen antialiased bg-gray-200 flex  flex-col items-center ">
       <Head>
@@ -48,7 +21,7 @@ const Home = ({ }) => {
         </div>
 
         <div>Traffic</div>
-        {itemList.length ? (
+        {visitlogs.length ? (
           <table className="table-auto w-full mt-3">
             <thead>
               <tr>
@@ -67,7 +40,7 @@ const Home = ({ }) => {
               </tr>
             </thead>
             <tbody>
-              {itemList.map((item) => (
+              {visitlogs.map((item) => (
                 <tr key={uuidv4()} className="lg:text-center">
                   <td className="rounded border px-4 py-2">{item.pid}</td>
                   <td className="rounded border px-4 py-2">{item.ip}</td>
@@ -80,11 +53,16 @@ const Home = ({ }) => {
         ) : (
           <></>
         )}
-
       </main>
-
     </div>
   );
 };
+
+export async function getServerSideProps(context) {
+  const res = await fetch(`http://localhost:3000/api/log`);
+  const { data } = await res.json();
+
+  return { props: { visitlogs: data } };
+}
 
 export default Home;
