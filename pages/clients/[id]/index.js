@@ -5,7 +5,7 @@ import { Confirm, Button, Loader, Card, Image } from "semantic-ui-react";
 import absoluteUrl from "next-absolute-url";
 import { route } from "next/dist/next-server/server/router";
 import Link from "next/link";
-import JSONTree from "../../components/JSONTree";
+import JSONTree from "../../../components/JSONTree";
 
 const Visitor = ({ visitor }) => {
   return (
@@ -13,7 +13,7 @@ const Visitor = ({ visitor }) => {
       <div className="bg-gray-200 h-screen w-screen-md">
         <div className="flex justify-between items-center ">
           <h1 className="text-3xl font-medium ">View Client</h1>
-          <Link href="/">
+          <Link href="/clients">
             <a className=" text-md text-gray-700 font-medium hover:text-gray-900 ">
               Back
             </a>

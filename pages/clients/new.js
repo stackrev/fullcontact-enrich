@@ -3,7 +3,7 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import { useRouter } from "next/router";
 import { Button, Form, Loader } from "semantic-ui-react";
-import { AlertDanger } from "../components/Alert";
+import { AlertDanger } from "../../components/Alert";
 
 const newVisitor = () => {
   const [showAlert, setShowAlert] = useState(false);
@@ -47,7 +47,7 @@ const newVisitor = () => {
       if (res.status === 409) {
         setShowAlert(true);
         setIsSubmitting(false);
-      } else router.push("/");
+      } else router.push("/clients");
     } catch (err) {
       console.error(err.message);
     }
@@ -80,7 +80,7 @@ const newVisitor = () => {
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
           <h1 className="text-3xl font-medium">Create Client</h1>
-          <Link href="/">
+          <Link href="/clients">
             <a className=" text-md text-gray-700 font-medium hover:text-gray-900 ">
               Back
             </a>

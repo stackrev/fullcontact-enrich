@@ -46,7 +46,7 @@ const EditVisitor = ({ visitor }) => {
       const deleted = await fetch(`/api/visitor/${visitorId}`, {
         method: "DELETE",
       });
-      router.push("/");
+      router.push("/clients");
     } catch (err) {
       console.error(err.message);
     }
@@ -63,7 +63,7 @@ const EditVisitor = ({ visitor }) => {
 
         body: JSON.stringify(form),
       });
-      router.push("/");
+      router.push("/clients");
     } catch (err) {
       console.error(err.message);
     }
@@ -103,7 +103,7 @@ const EditVisitor = ({ visitor }) => {
       <div className=" flex flex-col justify-center max-w-screen-md mx-auto py-8 antialiased px-10 ">
         <div className="flex justify-between items-center my-8 ">
           <h1 className="text-3xl font-medium">Edit Client</h1>
-          <Link href="/">
+          <Link href="/clients">
             <a className=" text-md text-gray-700 font-medium hover:text-gray-900 ">
               Back
             </a>
