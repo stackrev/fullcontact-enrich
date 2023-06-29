@@ -22,13 +22,16 @@ function hello_elementor_child_enqueue_scripts()
 }
 add_action('wp_enqueue_scripts', 'hello_elementor_child_enqueue_scripts');
 
-function send_traffic()
+function send_traffic($type)
 {
   if (!$_COOKIE['fc_pid'])
     return;
   $pid = $_COOKIE['fc_pid'];
   $current_time = date('Y-m-d H:i:s');
-  $ip_address = $_SERVER['REMOTE_ADDR'];
+  if($type == 'pid')
+    $key = $_SERVER['REMOTE_ADDR'];
+  else if($ype == 'maid')
+    $key = $_SERVER['REQUEST_URI'];
 
   $curl = curl_init();
 
@@ -44,9 +47,10 @@ function send_traffic()
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => 'POST',
       CURLOPT_POSTFIELDS => '{
-    "pid": "' . $pid . '",
+    "key": "' . $key . '",
     "date": "' . $current_time . '",
     "ip": "' . $ip_address . '"
+    "type": "' . $type . '"
   }',
       CURLOPT_HTTPHEADER => array(
         'Content-Type: application/json',
@@ -64,3 +68,14 @@ function execute_once_on_visit()
   send_traffic();
 }
 add_action('init', 'execute_once_on_visit');
+
+
+function detect_url_change() {
+  // Get the current URL
+  $current_url = $_SERVER['REQUEST_URI'];
+
+  if(strstr($current_url, "maid"))
+    send_traffic('maid');
+}
+
+add_action('template_redirect', 'detect_url_change');

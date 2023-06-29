@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const piddateSchema = new mongoose.Schema({
-  pid: {
+const keydateSchema = new mongoose.Schema({
+  key: {
     type: String,
     required: true,
   },
@@ -11,4 +11,4 @@ const piddateSchema = new mongoose.Schema({
 });
 
 module.exports =
-  mongoose.models.PidDate || mongoose.model("PidDate", piddateSchema);
+  mongoose.models.KeyDate || mongoose.model("KeyDate", keydateSchema);
