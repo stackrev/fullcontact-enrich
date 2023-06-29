@@ -2,8 +2,12 @@ import Link from "next/link";
 import Head from "next/head";
 import fetch from "isomorphic-unfetch";
 import Clients from "../../components/Clients";
+import { Pagination } from "semantic-ui-react";
 
-const Home = ({ clients }) => {
+const Home = ({ data }) => {
+  const handlePageChange = (event, { activePage }) => {
+    window.location.href = `?page=${activePage}&limit=${10}`;
+  };
   return (
     <div className="min-h-screen antialiased bg-gray-200 flex  flex-col items-center ">
       <Head>
@@ -23,7 +27,7 @@ const Home = ({ clients }) => {
 
         <div className="flex justify-between items-center px-2 ">
           <h3 className="text-xl text-gray-800 font-medium">
-            {clients.length} Clients
+            {data.recordsCount} Clients
           </h3>
           <div>
             <Link href="/clients/upload">
@@ -40,7 +44,12 @@ const Home = ({ clients }) => {
           </div>
         </div>
 
-        <Clients clients={clients} />
+        <Pagination
+          activePage={data.activePage}
+          totalPages={data.pagesCount}
+          onPageChange={handlePageChange}
+        />
+        <Clients clients={data.clients} />
       </main>
 
       <footer className=" max-w-screen-lg p-6 bg-gray-200 w-full flex justify-between items-center">
@@ -68,10 +77,13 @@ const Home = ({ clients }) => {
 };
 
 export async function getServerSideProps(context) {
-  const res = await fetch(`http://localhost:3000/api/client`);
+  const { page = 1, limit = 10, isrecogonly = false } = context.query;
+  const res = await fetch(
+    `http://localhost:3000/api/client?page=${page}&limit=${limit}`
+  );
   const { data } = await res.json();
 
-  return { props: { clients: data } };
+  return { props: { data: data } };
 }
 
 // Home.getInitialProps = async ({ req, res }) => {

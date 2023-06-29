@@ -9,8 +9,23 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const clients = await Client.find({});
-        res.status(200).json({ success: true, data: clients });
+        const { page = 1, limit = 10 } = req.query;
+        const recordsCount = await Client.count({});
+        const start = (page - 1) * limit;
+
+        const clients = await Client.find({}, null, {
+          skip: start,
+          limit: parseInt(limit),
+        });
+        res.status(200).json({
+          success: true,
+          data: {
+            activePage: page,
+            pagesCount: Math.ceil(recordsCount / limit),
+            recordsCount: recordsCount,
+            clients: clients,
+          },
+        });
       } catch (error) {
         res.status(400).json({ success: false });
       }
