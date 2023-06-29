@@ -21,8 +21,20 @@ const Client = ({ client }) => {
         </div>
         <div className=" overflow-x-auto shadow rounded-lg client my-6 border lg:p-4 bg-white ">
           <b>{client.email}</b>
-          <p>id: {client._id}</p>
-          <p>PID: {client.pid}</p>
+          <p>
+            <b>id:</b> {client._id}
+          </p>
+          <p>
+            <b>PID:</b> {client.pid}
+          </p>
+          <b>Maids</b>
+          <ul>
+            {client.maids.map((maid) => (
+              <li>
+                {maid.id} ({maid.type})
+              </li>
+            ))}
+          </ul>
           {/* <div>{JSONTree(client.info)}</div> */}
         </div>
         {/* <Card>
