@@ -1,8 +1,23 @@
 import Head from "next/head";
 import { v4 as uuidv4 } from "uuid";
 import fetch from "isomorphic-unfetch";
+import { Pagination, Checkbox } from "semantic-ui-react";
+import { useState } from "react";
 
 const Home = ({ data }) => {
+  const handlePageChange = (event, { activePage }) => {
+    window.location.href = `?page=${activePage}&limit=${10}&isrecogonly=${
+      data.isRecogOnly
+    }`;
+    //    console.log(activePage);
+  };
+  const handleCheckboxChange = () => {
+    window.location.href = `?page=${1}&limit=${10}&isrecogonly=${!(data.isRecogOnly ===
+    "true"
+      ? true
+      : false)}`;
+  };
+
   return (
     <div className="min-h-screen antialiased bg-gray-200 flex  flex-col items-center ">
       <Head>
@@ -19,7 +34,6 @@ const Home = ({ data }) => {
             Using FullContact API
           </h3>
         </div>
-
         <div className=" overflow-x-auto shadow rounded-lg client my-6 border lg:p-4 bg-white ">
           <div className="flex justify-between items-center px-2 ">
             <h3 className="text-xl text-gray-800 font-medium">Traffic</h3>
@@ -31,12 +45,23 @@ const Home = ({ data }) => {
             </div>
             <div>
               {"Recognition Rate: "}
-              <b>
-                {(data.recogCount / data.totalCount).toFixed(4) * 100.0}
-                %
-              </b>
+              <b>{(data.recogCount / data.totalCount).toFixed(4) * 100.0}%</b>
             </div>
           </div>
+        </div>
+        <div>
+          <Checkbox
+            toggle
+            checked={data.isRecogOnly === "true" ? true : false}
+            onChange={handleCheckboxChange}
+            label="Recognized"
+            className="mr-10"
+          />
+          <Pagination
+            activePage={data.activePage}
+            totalPages={data.pagesCount}
+            onPageChange={handlePageChange}
+          />
         </div>
         {data.visitlogs.length ? (
           <table className="table-auto w-full mt-3">
@@ -80,7 +105,10 @@ const Home = ({ data }) => {
 };
 
 export async function getServerSideProps(context) {
-  const res = await fetch(`http://localhost:3000/api/log`);
+  const { page = 1, limit = 10, isrecogonly = false } = context.query;
+  const res = await fetch(
+    `http://localhost:3000/api/log?page=${page}&limit=${limit}&isrecogonly=${isrecogonly}`
+  );
   const { data } = await res.json();
 
   return { props: { data: data } };

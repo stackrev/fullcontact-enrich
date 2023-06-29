@@ -11,6 +11,8 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
+        const { page = 1, limit = 10, isrecogonly = false } = req.query;
+        console.log(req.query);
         const totalResult = await VisitLog.aggregate([
           {
             $group: {
@@ -29,7 +31,7 @@ export default async (req, res) => {
         const recogResult = await VisitLog.aggregate([
           {
             $match: {
-              email:  { $ne: "Anony" },
+              email: { $ne: "Anony" },
             },
           },
           {
@@ -46,10 +48,25 @@ export default async (req, res) => {
           },
         ]).exec();
 
-        const visitlogs = await VisitLog.find({});
+        const recordsCount = await VisitLog.count(
+          isrecogonly === "true" ? { email: { $ne: "Anony" } } : {}
+        );
+        const start = (page - 1) * limit;
+
+        const visitlogs = await VisitLog.find(
+          isrecogonly === "true" ? { email: { $ne: "Anony" } } : {},
+          null,
+          {
+            skip: start,
+            limit: parseInt(limit),
+          }
+        );
         res.status(200).json({
           success: true,
           data: {
+            isRecogOnly: isrecogonly,
+            activePage: page,
+            pagesCount: Math.ceil(recordsCount / limit),
             visitlogs: visitlogs,
             totalCount: totalResult[0].uniquePersonCount,
             recogCount: recogResult[0].uniquePersonCount,
@@ -70,9 +87,9 @@ export default async (req, res) => {
           });
           return;
         }
-        if (type === 'maid') {
+        if (type === "maid") {
           const urlParams = new URLSearchParams(key);
-          key = urlParams.get('maid');
+          key = urlParams.get("maid");
         }
 
         const currentDate = new Date(date);
