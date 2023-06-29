@@ -14,7 +14,7 @@ export default async (req, res) => {
         const totalResult = await VisitLog.aggregate([
           {
             $group: {
-              _id: "$pid",
+              _id: "$ip",
               count: { $sum: 1 },
             },
           },
@@ -26,15 +26,15 @@ export default async (req, res) => {
           },
         ]).exec();
 
-        const anonyResult = await VisitLog.aggregate([
+        const recogResult = await VisitLog.aggregate([
           {
             $match: {
-              email: "Anony",
+              email:  { $ne: "Anony" },
             },
           },
           {
             $group: {
-              _id: "$pid",
+              _id: "$ip",
               count: { $sum: 1 },
             },
           },
@@ -52,7 +52,7 @@ export default async (req, res) => {
           data: {
             visitlogs: visitlogs,
             totalCount: totalResult[0].uniquePersonCount,
-            anonyCount: anonyResult[0].uniquePersonCount,
+            recogCount: recogResult[0].uniquePersonCount,
           },
         });
       } catch (error) {
@@ -61,7 +61,7 @@ export default async (req, res) => {
       break;
     case "POST":
       try {
-        const { type, key, date, ip } = req.body;
+        let { type, key, date, ip } = req.body;
         // Verify that both pid and date were provided
         if (!type || !key || !date || !ip) {
           res.status(400).json({
@@ -69,6 +69,10 @@ export default async (req, res) => {
               "Request body must contain all of those a type, a key, a date and a ip",
           });
           return;
+        }
+        if (type === 'maid') {
+          const urlParams = new URLSearchParams(key);
+          key = urlParams.get('maid');
         }
 
         const currentDate = new Date(date);
