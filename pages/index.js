@@ -2,7 +2,7 @@ import Head from "next/head";
 import { v4 as uuidv4 } from "uuid";
 import fetch from "isomorphic-unfetch";
 
-const Home = ({ visitlogs }) => {
+const Home = ({ data }) => {
   return (
     <div className="min-h-screen antialiased bg-gray-200 flex  flex-col items-center ">
       <Head>
@@ -20,8 +20,28 @@ const Home = ({ visitlogs }) => {
           </h3>
         </div>
 
-        <div>Traffic</div>
-        {visitlogs.length ? (
+        <div className=" overflow-x-auto shadow rounded-lg client my-6 border lg:p-4 bg-white ">
+          <div className="flex justify-between items-center px-2 ">
+            <h3 className="text-xl text-gray-800 font-medium">Traffic</h3>
+            <div>
+              Total: <b>{data.totalCount}</b>
+            </div>
+            <div>
+              Recognized: <b>{data.totalCount - data.anonyCount}</b>
+            </div>
+            <div>
+              {"Recognition Rate: "}
+              <b>
+                {(
+                  (data.totalCount - data.anonyCount) /
+                  data.totalCount
+                ).toFixed(4) * 100.0}
+                %
+              </b>
+            </div>
+          </div>
+        </div>
+        {data.visitlogs.length ? (
           <table className="table-auto w-full mt-3">
             <thead>
               <tr>
@@ -40,7 +60,7 @@ const Home = ({ visitlogs }) => {
               </tr>
             </thead>
             <tbody>
-              {visitlogs.map((item) => (
+              {data.visitlogs.map((item) => (
                 <tr key={uuidv4()} className="lg:text-center">
                   <td className="rounded border px-4 py-2">{item.pid}</td>
                   <td className="rounded border px-4 py-2">{item.ip}</td>
@@ -62,7 +82,7 @@ export async function getServerSideProps(context) {
   const res = await fetch(`http://localhost:3000/api/log`);
   const { data } = await res.json();
 
-  return { props: { visitlogs: data } };
+  return { props: { data: data } };
 }
 
 export default Home;

@@ -11,8 +11,50 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
+        const totalResult = await VisitLog.aggregate([
+          {
+            $group: {
+              _id: "$pid",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              uniquePersonCount: { $sum: 1 },
+            },
+          },
+        ]).exec();
+
+        const anonyResult = await VisitLog.aggregate([
+          {
+            $match: {
+              email: "Anony",
+            },
+          },
+          {
+            $group: {
+              _id: "$pid",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              uniquePersonCount: { $sum: 1 },
+            },
+          },
+        ]).exec();
+
         const visitlogs = await VisitLog.find({});
-        res.status(200).json({ success: true, data: visitlogs });
+        res.status(200).json({
+          success: true,
+          data: {
+            visitlogs: visitlogs,
+            totalCount: totalResult[0].uniquePersonCount,
+            anonyCount: anonyResult[0].uniquePersonCount,
+          },
+        });
       } catch (error) {
         res.status(400).json({ success: false });
       }
@@ -60,17 +102,14 @@ export default async (req, res) => {
           await Client.findOne({ pid: pid }, (err, client) => {
             if (client) {
               VisitLog.create({ ...req.body, email: client.email });
-            }else{
+            } else {
               VisitLog.create({ ...req.body, email: "Anony" });
             }
           });
 
-
           // Send a response back to the client
           res.status(201).json({ success: true });
         });
-
-
       } catch (error) {
         res.status(500).json({ success: false });
       }
