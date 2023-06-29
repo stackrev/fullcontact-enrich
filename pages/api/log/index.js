@@ -33,10 +33,10 @@ export default async (req, res) => {
 
         await PidDate.findOne({ pid: pid }, async (err, pidDate) => {
           if (pidDate) {
-            if (currentDate.getTime() - pidDate.date.getTime() < 3600 * 1000) {
+            if (currentDate.getTime() - pidDate.date.getTime() < 60 * 1000) {
               await PidDate.findByIdAndUpdate(
                 pidDate._id,
-                { ...pidDate, date: currentDate },
+                { pid: pid, date: currentDate },
                 {
                   new: true,
                   runValidators: true,
@@ -46,7 +46,7 @@ export default async (req, res) => {
             } else {
               await PidDate.findByIdAndUpdate(
                 pidDate._id,
-                { ...pidDate, date: currentDate },
+                { pid: pid, date: currentDate },
                 {
                   new: true,
                   runValidators: true,
@@ -56,25 +56,21 @@ export default async (req, res) => {
           } else {
             await PidDate.create({ pid: pid, date: currentDate });
           }
+          // Do something with the pid and date here
+          await Client.findOne({ pid: pid }, (err, client) => {
+            if (client) {
+              VisitLog.create({ ...req.body, email: client.email });
+            }else{
+              VisitLog.create({ ...req.body, email: "Anony" });
+            }
+          });
+
+
+          // Send a response back to the client
+          res.status(201).json({ success: true });
         });
 
-        let sendData = { ...req.body, email: "Anony" };
-        // Do something with the pid and date here
-        await Client.findOne({ pid: pid }, (err, client) => {
-          if (client) {
-            sendData = { ...sendData, email: client.email };
-          }
-        });
 
-        //        const socket = socketIOClient(API_URL);
-
-        // Emit the POST data to the Socket.IO server
-        // socket.emit('postData', sendData);
-        console.log(sendData);
-        const visitLog = VisitLog.create(sendData);
-
-        // Send a response back to the client
-        res.status(201).json({ success: true, data: visitLog });
       } catch (error) {
         res.status(500).json({ success: false });
       }
