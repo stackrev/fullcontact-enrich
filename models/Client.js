@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 const clientSchema = new mongoose.Schema({
   pid: {
     type: String,
-  },
-  recordId: {
-    type: String,
+    required: true,
   },
   email: {
     type: String,
     required: true,
+  },
+  maids: {
+    type: Array,
   },
 });
 

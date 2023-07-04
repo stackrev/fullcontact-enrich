@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 const visitlogSchema = new mongoose.Schema({
   pid: {
     type: String,
-    required: true,
+  },
+  maid: {
+    type: String,
   },
   ip: {
     type: String,

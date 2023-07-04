@@ -9,8 +9,23 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const clients = await Client.find({});
-        res.status(200).json({ success: true, data: clients });
+        const { page = 1, limit = 10 } = req.query;
+        const recordsCount = await Client.count({});
+        const start = (page - 1) * limit;
+
+        const clients = await Client.find({}, null, {
+          skip: start,
+          limit: parseInt(limit),
+        });
+        res.status(200).json({
+          success: true,
+          data: {
+            activePage: page,
+            pagesCount: Math.ceil(recordsCount / limit),
+            recordsCount: recordsCount,
+            clients: clients,
+          },
+        });
       } catch (error) {
         res.status(400).json({ success: false });
       }
@@ -35,7 +50,9 @@ export default async (req, res) => {
 
               var raw = JSON.stringify({
                 email: email,
+                dataFilter: ["resolve", "maid_amplification"],
                 generatePid: true,
+                //                maxMaids: 20,
               });
 
               var requestOptions = {
@@ -46,11 +63,12 @@ export default async (req, res) => {
               };
               // Send the Email to Enrich API
               const response = await fetch(
-                "https://api.fullcontact.com/v3/identity.resolve",
+                "https://api.fullcontact.com/v3/person.enrich",
                 requestOptions
               );
               const data = await response.json();
-              clientData.pid = data.personIds[0];
+              clientData.pid = data.details.identifiers.personIds[0];
+              clientData.maids = data.details.identifiers.maids;
               const client = await Client.create(clientData);
               res.status(201).json({ success: true, data: client });
             } catch (error) {

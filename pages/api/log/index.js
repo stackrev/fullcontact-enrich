@@ -1,6 +1,6 @@
 import dbConnect from "../../../utils/dbConnect";
 import VisitLog from "../../../models/VisitLog";
-import PidDate from "../../../models/PidDate";
+import KeyDate from "../../../models/KeyDate";
 import Client from "../../../models/Client";
 const API_URL = "http://localhost:3001"; // Update with the Socket.IO server URL
 
@@ -11,32 +11,95 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const visitlogs = await VisitLog.find({});
-        res.status(200).json({ success: true, data: visitlogs });
+        const { page = 1, limit = 10, isrecogonly = false } = req.query;
+        console.log(req.query);
+        const totalResult = await VisitLog.aggregate([
+          {
+            $group: {
+              _id: "$ip",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              uniquePersonCount: { $sum: 1 },
+            },
+          },
+        ]).exec();
+
+        const recogResult = await VisitLog.aggregate([
+          {
+            $match: {
+              email: { $ne: "Anony" },
+            },
+          },
+          {
+            $group: {
+              _id: "$ip",
+              count: { $sum: 1 },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              uniquePersonCount: { $sum: 1 },
+            },
+          },
+        ]).exec();
+
+        const recordsCount = await VisitLog.count(
+          isrecogonly === "true" ? { email: { $ne: "Anony" } } : {}
+        );
+        const start = (page - 1) * limit;
+
+        const visitlogs = await VisitLog.find(
+          isrecogonly === "true" ? { email: { $ne: "Anony" } } : {},
+          null,
+          {
+            skip: start,
+            limit: parseInt(limit),
+          }
+        );
+        res.status(200).json({
+          success: true,
+          data: {
+            isRecogOnly: isrecogonly,
+            activePage: page,
+            pagesCount: Math.ceil(recordsCount / limit),
+            visitlogs: visitlogs,
+            totalCount: totalResult[0].uniquePersonCount,
+            recogCount: recogResult[0].uniquePersonCount,
+          },
+        });
       } catch (error) {
         res.status(400).json({ success: false });
       }
       break;
     case "POST":
       try {
-        const { pid, date, ip } = req.body;
+        let { type, key, date, ip } = req.body;
         // Verify that both pid and date were provided
-        if (!pid || !date || !ip) {
+        if (!type || !key || !date || !ip) {
           res.status(400).json({
             error:
-              "Request body must contain all of those a pid, a date and a ip",
+              "Request body must contain all of those a type, a key, a date and a ip",
           });
           return;
+        }
+        if (type === "maid") {
+          const urlParams = new URLSearchParams(key);
+          key = urlParams.get("maid");
         }
 
         const currentDate = new Date(date);
 
-        await PidDate.findOne({ pid: pid }, async (err, pidDate) => {
-          if (pidDate) {
-            if (currentDate.getTime() - pidDate.date.getTime() < 60 * 1000) {
-              await PidDate.findByIdAndUpdate(
-                pidDate._id,
-                { pid: pid, date: currentDate },
+        await KeyDate.findOne({ key: key }, async (err, keyDate) => {
+          if (keyDate) {
+            if (currentDate.getTime() - keyDate.date.getTime() < 60 * 1000) {
+              await KeyDate.findByIdAndUpdate(
+                keyDate._id,
+                { key: key, date: currentDate },
                 {
                   new: true,
                   runValidators: true,
@@ -44,9 +107,9 @@ export default async (req, res) => {
               );
               return res.status(409).json({ message: "Duplicated" });
             } else {
-              await PidDate.findByIdAndUpdate(
-                pidDate._id,
-                { pid: pid, date: currentDate },
+              await KeyDate.findByIdAndUpdate(
+                keyDate._id,
+                { key: key, date: currentDate },
                 {
                   new: true,
                   runValidators: true,
@@ -54,23 +117,34 @@ export default async (req, res) => {
               );
             }
           } else {
-            await PidDate.create({ pid: pid, date: currentDate });
+            await KeyDate.create({ key: key, date: currentDate });
           }
           // Do something with the pid and date here
-          await Client.findOne({ pid: pid }, (err, client) => {
-            if (client) {
-              VisitLog.create({ ...req.body, email: client.email });
-            }else{
-              VisitLog.create({ ...req.body, email: "Anony" });
-            }
-          });
-
+          if (type == "pid") {
+            await Client.findOne({ pid: key }, (err, client) => {
+              if (client) {
+                VisitLog.create({ ...req.body, pid: key, email: client.email });
+              } else {
+                VisitLog.create({ ...req.body, pid: key, email: "Anony" });
+              }
+            });
+          } else if (type == "maid") {
+            await Client.findOne({ "maids.id": key }, (err, client) => {
+              if (client) {
+                VisitLog.create({
+                  ...req.body,
+                  maid: key,
+                  email: client.email,
+                });
+              } else {
+                VisitLog.create({ ...req.body, maid: key, email: "Anony" });
+              }
+            });
+          }
 
           // Send a response back to the client
           res.status(201).json({ success: true });
         });
-
-
       } catch (error) {
         res.status(500).json({ success: false });
       }
