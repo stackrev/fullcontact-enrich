@@ -20,6 +20,7 @@ function hello_elementor_child_enqueue_scripts()
     '1.0.0'
   );
 }
+
 add_action('wp_enqueue_scripts', 'hello_elementor_child_enqueue_scripts');
 
 function send_traffic($type)
@@ -65,7 +66,6 @@ function execute_once_on_visit()
   	send_traffic('pid');
 }
 add_action('init', 'execute_once_on_visit');
-
 
 function detect_url_change()
 {
